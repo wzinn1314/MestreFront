@@ -7,24 +7,25 @@
   }
   function beep(){
     if(!audio)return;
-    // Three double rings, like a telephone, over approximately six seconds.
+    // A bright delivery doorbell: three ding-dong pairs with a bell-like decay.
     try{
-      for(let ring=0;ring<3;ring++)for(let pulse=0;pulse<2;pulse++){
-        const start=audio.currentTime+ring*2.2+pulse*.65;
-        for(const frequency of [440,480]){
+      for(let ring=0;ring<3;ring++)for(let note=0;note<2;note++){
+        const start=audio.currentTime+ring*2.1+note*.48;
+        const fundamental=note===0?1318.51:1046.5;
+        for(const [ratio,volume,decay] of [[1,.6,1.05],[2.76,.12,.38]]){
           const oscillator=audio.createOscillator(),gain=audio.createGain();
-          oscillator.type='sine';oscillator.frequency.value=frequency;
+          oscillator.type='sine';oscillator.frequency.value=fundamental*ratio;
           oscillator.connect(gain);gain.connect(audio.destination);
           gain.gain.setValueAtTime(0,start);
-          gain.gain.linearRampToValueAtTime(.4,start+.015);
-          gain.gain.setValueAtTime(.4,start+.46);
-          gain.gain.exponentialRampToValueAtTime(.001,start+.52);
-          oscillator.start(start);oscillator.stop(start+.54);
+          gain.gain.linearRampToValueAtTime(volume,start+.008);
+          gain.gain.exponentialRampToValueAtTime(.001,start+decay);
+          oscillator.start(start);oscillator.stop(start+decay+.03);
           oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
         }
       }
     }catch{}
   }
+
   function claim(id){
     try{const key='mdl-notified-orders',ids=JSON.parse(localStorage.getItem(key)||'[]');if(ids.includes(id))return false;localStorage.setItem(key,JSON.stringify([...ids.slice(-199),id]));}catch{}
     return true;
