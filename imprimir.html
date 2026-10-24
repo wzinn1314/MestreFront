@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Imprimir pedido · Mestre dos Lanches</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="css/imprimir.css">
+</head>
+<body data-paper="58">
+  <header class="print-controls">
+    <div><h1>Imprimir pedido</h1><p>Escolha o tamanho do papel e selecione a impressora na janela de impressão.</p></div>
+    <div class="print-options"><label for="paper-width">Bobina<select id="paper-width"><option value="58" selected>58 mm — pequena</option><option value="80">80 mm</option></select></label><button id="print-order" type="button" disabled>Imprimir pedido</button><a href="painel.html">Voltar ao painel</a></div>
+    <p id="print-message" role="status">Carregando o pedido…</p>
+  </header>
+  <main id="receipt" class="receipt" hidden>
+    <header class="receipt-heading"><h2>MESTRE DOS LANCHES</h2><p>Salgueiro - PE</p><p>(87) 98859-2007</p><strong id="receipt-code"></strong><p id="receipt-date"></p><strong id="receipt-status"></strong></header>
+    <section class="receipt-customer"><h3>CLIENTE</h3><p id="receipt-name"></p><p id="receipt-phone"></p><h3 id="receipt-fulfillment"></h3><p id="receipt-address"></p></section>
+    <section class="receipt-products"><h3>ITENS DO PEDIDO</h3><div id="receipt-items"></div></section>
+    <section class="receipt-notes" id="receipt-notes-section" hidden><h3>OBSERVAÇÕES</h3><p id="receipt-notes"></p></section>
+    <section class="receipt-totals"><div><span>Produtos</span><span id="receipt-subtotal"></span></div><div><span>Entrega</span><span id="receipt-delivery"></span></div><div class="receipt-total"><strong>TOTAL</strong><strong id="receipt-total"></strong></div></section>
+    <footer class="receipt-footer"><p>Pagamento: <strong id="receipt-payment"></strong></p><p id="receipt-change"></p><p>Obrigado pelo seu pedido!</p></footer>
+  </main>
+  <script src="js/api.js"></script><script src="js/imprimir.js"></script>
+</body>
+</html>

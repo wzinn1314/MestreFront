@@ -1,0 +1,29 @@
+html { scroll-snap-type:none; }
+.entry-page { min-height:100svh; display:flex; flex-direction:column; background:radial-gradient(ellipse at 50% 0,rgba(232,197,71,.08),transparent 60%),var(--bg); }
+.entry-shell { width:min(460px,calc(100% - 40px)); margin:auto; padding:20px 0 32px; }
+.entry-heading { text-align:center; margin-bottom:32px; }
+.entry-heading img { width:140px; height:auto; margin:0 auto 16px; }
+.entry-heading h1 { font-family:var(--font); font-size:clamp(28px,4.5vw,40px); line-height:1.25; letter-spacing:-.03em; }
+.entry-heading > p:last-child { color:var(--muted); margin-top:12px; font-size:15px; }
+.entry-options { display:grid; grid-template-columns:1fr; gap:22px; }
+.entry-card { display:flex; flex-direction:column; padding:32px; border:1px solid var(--line); border-radius:24px; background:var(--panel); }
+.entry-card:first-child { border-color:rgba(232,197,71,.4); }
+.entry-icon { color:var(--gold); width:50px; height:50px; padding:10px; border:1px solid var(--line); border-radius:14px; margin-bottom:20px; background:rgba(232,197,71,.06); }
+.entry-icon svg { width:100%; height:100%; }
+.entry-label { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.entry-card h2 { font-family:var(--font); font-size:24px; margin-bottom:12px; }
+.entry-card > p:not(.entry-label) { color:var(--muted); font-size:14px; line-height:1.7; }
+.entry-card form { margin-top:24px; }
+.entry-card .field { font-size:13px; color:var(--muted); margin-bottom:16px; }
+.entry-card input { min-height:48px; }
+.entry-card .btn { width:100%; justify-content:space-between; min-height:48px; }
+.entry-error { color:var(--closed); font-size:13px; margin-top:12px; }
+.entry-error:empty { display:none; }
+.entry-footer { text-align:center; color:var(--muted); font-size:12px; margin-top:32px; }
+@media(max-width:650px) { .entry-options { grid-template-columns:1fr; } .entry-shell { padding-top:24px; } .entry-card { padding:26px; } .entry-heading img { width:115px; } }
+.entry-orders-link { display:block; margin-top:16px; text-align:center; color:var(--gold-2); font-size:13px; }
+
+.entry-company-access { display:flex; justify-content:flex-end; padding:12px 20px 0; flex-shrink:0; }
+.entry-company-access a { display:inline-flex; align-items:center; gap:6px; padding:8px 4px; font-size:12px; line-height:1.5; color:var(--muted); text-decoration:none; }
+.entry-company-access a:hover { color:var(--gold-2); }
+.entry-company-access a:focus-visible { outline:2px solid var(--gold); outline-offset:4px; border-radius:4px; }

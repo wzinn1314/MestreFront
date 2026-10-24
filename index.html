@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Entre como cliente para fazer seu pedido ou como empresa para acessar o painel do Mestre dos Lanches.">
+  <title>Bem-vindo · Mestre dos Lanches</title>
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/entrada.css">
+<link rel="stylesheet" href="css/responsivo.css">
+</head>
+<body class="entry-page">
+  <nav class="entry-company-access" aria-label="Acesso da empresa"><a href="painel.html">Entrar como empresa <span aria-hidden="true">&rarr;</span></a></nav>
+  <main class="entry-shell">
+    <header class="entry-heading">
+      <a href="pedidos.html" aria-label="Ir para o cardápio"><img src="assets/logo.svg" width="160" height="140" alt="Mestre dos Lanches"></a>
+      <p class="kicker">Mestre dos Lanches</p>
+      <h1>Faça seu pedido</h1>
+      <p>Informe seu nome para acessar o cardápio.</p>
+    </header>
+    <div class="entry-options">
+      <section class="entry-card" id="cliente" aria-labelledby="client-title">
+        <span class="entry-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="16" cy="10" r="5"/><path d="M6 28v-4a10 10 0 0 1 20 0v4"/></svg></span>
+        <p class="entry-label">Quero pedir</p>
+        <h2 id="client-title">Entrar como cliente</h2>
+        <p>Escolha seus lanches e monte seu pedido.</p>
+        <form id="client-entry-form">
+          <label class="field" for="entry-name">Seu nome
+            <input id="entry-name" name="nome" type="text" autocomplete="name" minlength="2" maxlength="80" required placeholder="Como podemos chamar você?">
+          </label>
+          <button type="submit" class="btn btn-gold">Entrar como cliente <span aria-hidden="true">→</span></button>
+          <p id="entry-error" class="entry-error" role="alert"></p><a class="entry-orders-link" href="acompanhar.html">Acompanhar meus pedidos &rarr;</a>
+        </form>
+      </section>
+    </div>
+    <footer class="entry-footer">Salgueiro · PE</footer>
+  </main>
+  <script src="js/entrada.js"></script>
+</body>
+</html>

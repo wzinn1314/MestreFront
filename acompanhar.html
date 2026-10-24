@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+  <title>Meus pedidos · Mestre dos Lanches</title>
+  <link rel="icon" href="assets/logo.svg"><link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/pedidos.css"><link rel="stylesheet" href="css/acompanhar.css">
+<link rel="stylesheet" href="css/responsivo.css">
+</head>
+<body class="orders-page">
+  <header class="topbar"><a class="brand" href="pedidos.html"><img src="assets/logo.svg" alt="Mestre dos Lanches" width="78" height="64"><strong>MESTRE DOS LANCHES</strong></a><a class="btn btn-ghost" href="pedidos.html">Fazer pedido</a></header>
+  <main class="tracking-shell">
+<nav class="client-tabs" aria-label="Área do cliente"><a href="pedidos.html">Card&aacute;pio</a><a href="acompanhar.html" aria-current="page">Meus pedidos</a></nav>
+    <p class="kicker">Área do cliente</p><h1 id="tracking-title">Meus pedidos</h1>
+    <p class="tracking-intro">Veja aqui se a lanchonete aceitou seu pedido e acompanhe cada etapa at&eacute; a entrega.</p><section id="customer-orders-section" hidden aria-label="Seus pedidos"><h2>Pedidos realizados</h2><div class="order-history-tabs" role="group" aria-label="Filtrar pedidos"><button type="button" id="show-my-orders" class="tab active" aria-pressed="true">Pedidos</button><button type="button" id="show-cancelled-orders" class="tab" aria-pressed="false">Cancelados</button></div><p id="customer-order-empty" class="menu-note" hidden>Nenhum pedido nesta aba.</p><div id="customer-order-list" class="customer-order-list"></div></section><div id="tracking-picker" class="panel tracking-picker" hidden><label class="field" for="tracking-select">Qual pedido você quer acompanhar?<select id="tracking-select"></select></label><p class="menu-note">Seus pedidos ficam salvos neste navegador.</p></div>
+    <p id="tracking-message" role="status" aria-live="polite">Buscando seu pedido…</p>
+    <div id="tracking-empty" class="panel tracking-empty" hidden><h2>Você ainda não tem um pedido por aqui</h2><p>Depois de finalizar uma compra, você poderá acompanhar o andamento nesta página.</p><a class="btn btn-gold" href="pedidos.html">Ver cardápio</a></div>
+    <section id="tracking-content" hidden>
+      <div class="tracking-status panel"><span class="review-eyebrow" id="tracking-code"></span><h2 id="tracking-status" aria-live="polite"></h2><p id="tracking-description"></p><p class="menu-note" id="tracking-updated"></p><button id="tracking-refresh" class="btn btn-ghost" type="button">Atualizar pedido</button></div>
+      <ol id="tracking-steps" class="tracking-steps" aria-label="Andamento do pedido"></ol>
+      <section class="panel"><h2>O que você pediu</h2><ul id="tracking-items" class="tracking-items"></ul><dl class="cart-summary"><div><dt>Produtos</dt><dd id="tracking-subtotal"></dd></div><div><dt>Entrega</dt><dd id="tracking-fee"></dd></div><div><dt>Total</dt><dd id="tracking-total"></dd></div></dl><p class="menu-note" id="tracking-fulfillment"></p><p class="menu-note" id="tracking-payment"></p><p class="menu-note">A forma escolhida não confirma o pagamento. Combine o Pix diretamente com a lanchonete.</p></section>
+      <section class="tracking-events"><h2>Atualizações do pedido</h2><ol id="tracking-history" class="tracking-history"></ol></section>
+      <div class="actions tracking-actions"><a class="btn btn-gold" href="tel:+5587988592007">Falar com a lanchonete</a></div><p class="menu-note">As mudanças feitas pela lanchonete aparecem automaticamente a cada 5 segundos.</p>
+    </section>
+  </main>
+  <script src="js/api.js"></script><script src="js/historico-pedidos.js"></script><script src="js/acompanhar.js"></script>
+</body>
+</html>

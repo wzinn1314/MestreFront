@@ -1,0 +1,38 @@
+* { box-sizing:border-box; }
+body { margin:0; background:#16140f; color:#f6f1e4; font-family:Arial,sans-serif; }
+[hidden] { display:none !important; }
+.print-controls { width:min(800px,calc(100% - 32px)); margin:28px auto; }
+.print-controls h1 { font-size:24px; }
+.print-controls p { font-size:14px; line-height:1.6; color:#c7bda5; }
+.print-options { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end; }
+.print-options label { display:grid; gap:6px; font-size:12px; }
+.print-options select,.print-options button,.print-options a { min-height:44px; border-radius:10px; padding:12px; font:inherit; font-size:14px; }
+.print-options select { background:#0c0b09; color:#f6f1e4; border:1px solid #6b5830; }
+.print-options button { background:#e8c547; color:#181205; border:0; font-weight:bold; cursor:pointer; }
+.print-options button:disabled { opacity:.5; cursor:not-allowed; }
+.print-options a { color:#f6f1e4; }
+.receipt { width:58mm; padding:3mm; margin:24px auto 48px; background:#fff; color:#000; font:12px/1.4 'Courier New',monospace; overflow-wrap:anywhere; }
+body[data-paper="80"] .receipt { width:80mm; padding:4mm; font-size:13px; }
+.receipt h2 { font-size:15px; margin:0 0 6px; }
+.receipt h3 { font-size:12px; margin:10px 0 5px; }
+.receipt p { margin:4px 0; white-space:pre-wrap; }
+.receipt-heading { text-align:center; padding-bottom:10px; }
+.receipt-heading > strong { display:block; margin-top:10px; }
+.receipt section { border-top:1px dashed #000; padding:5px 0 10px; }
+.receipt-item { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin:10px 0; }
+.receipt-item div { min-width:0; }
+.receipt-item small { display:block; font-size:10px; margin-top:3px; }
+.receipt-item > strong { white-space:nowrap; }
+.receipt-totals > div { display:flex; justify-content:space-between; gap:8px; margin:6px 0; }
+.receipt-total { border-top:1px solid #000; padding-top:8px; font-size:15px; }
+.receipt-footer { text-align:center; font-size:10px; border-top:1px dashed #000; padding-top:10px; }
+@page { size:auto; margin:0; }
+@media print {
+ html,body { background:#fff; color:#000; margin:0; padding:0; }
+ .print-controls { display:none; }
+ .receipt { margin:0; box-shadow:none; }
+ .receipt-item { break-inside:avoid; }
+ .receipt-totals,.receipt-footer,.receipt-heading,.receipt-customer { break-inside:avoid; }
+}
+
+@media screen and (max-width:600px){.print-controls{width:calc(100% - 28px);margin:20px auto}.print-options{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}.print-options select{font-size:16px}.print-options button,.print-options a{text-align:center}.receipt,body[data-paper="80"] .receipt{max-width:calc(100% - 24px)}}
