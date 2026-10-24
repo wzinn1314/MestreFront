@@ -6,6 +6,24 @@
     try{const Audio=window.AudioContext || window.webkitAudioContext;if(!Audio)return false;audio ||= new Audio();audio.resume().catch(()=>{document.querySelector('#alerts-state').textContent='O navegador bloqueou o som. Clique em Ativar som e notificações para tentar novamente.';});enabled=true;return true;}catch{return false;}
   }
   function beep(){
+    if(window.speechSynthesis && window.SpeechSynthesisUtterance){
+      try{
+        const speech=window.speechSynthesis;
+        // Keep the call clear when several orders arrive together.
+        if(speech.speaking || speech.pending)return;
+        const call=new window.SpeechSynthesisUtterance('Delivery! Delivery! Chegou pedido! Delivery!');
+        call.lang='pt-BR';call.volume=1;call.rate=1.12;call.pitch=1.25;
+        const voices=speech.getVoices();
+        const voice=voices.find(voice=>voice.lang.toLowerCase()==='pt-br') || voices.find(voice=>voice.lang.toLowerCase().startsWith('pt'));
+        if(voice)call.voice=voice;
+        call.onerror=()=>playFallback();
+        speech.speak(call);
+        return;
+      }catch{}
+    }
+    playFallback();
+  }
+  function playFallback(){
     if(!audio)return;
     // Urgent delivery call: a bright, sustained eight-note phrase repeated four times.
     try{
