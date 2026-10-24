@@ -7,7 +7,7 @@
   }
   function beep(){
     if(!audio)return;
-    try{for(let i=0;i<3;i++){const oscillator=audio.createOscillator(),gain=audio.createGain(),start=audio.currentTime+i*.3;oscillator.connect(gain);gain.connect(audio.destination);oscillator.frequency.value=i===1?1046:784;gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(.18,start+.02);gain.gain.exponentialRampToValueAtTime(.001,start+.22);oscillator.start(start);oscillator.stop(start+.24);}}catch{}
+    try{for(let i=0;i<12;i++){const oscillator=audio.createOscillator(),gain=audio.createGain(),start=audio.currentTime+i*.5;oscillator.connect(gain);gain.connect(audio.destination);oscillator.type='triangle';oscillator.frequency.value=i%2?1046:784;gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(.65,start+.03);gain.gain.exponentialRampToValueAtTime(.001,start+.42);oscillator.start(start);oscillator.stop(start+.45);}}catch{}
   }
   function claim(id){
     try{const key='mdl-notified-orders',ids=JSON.parse(localStorage.getItem(key)||'[]');if(ids.includes(id))return false;localStorage.setItem(key,JSON.stringify([...ids.slice(-199),id]));}catch{}

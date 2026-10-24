@@ -51,6 +51,7 @@
     try{Object.assign(catalog,await api('/api/admin/store-status',{method:'PATCH',body:JSON.stringify({acceptingOrders:!catalog.acceptingOrders})}));renderStoreStatus();message(catalog.acceptingOrders?'Loja aberta para receber pedidos.':'Loja fechada para novos pedidos.');}catch(error){message(error.message);}finally{button.disabled=false;}
   });
   function renderProducts(){
+    $('#new-product-category').innerHTML=catalog.cardapio.map(group=>`<option value="${escape(group.id)}">${escape(group.nome)}</option>`).join('');
     renderStoreStatus();
     $('#accepting-orders').checked=catalog.acceptingOrders;
     $('#delivery-fee').value=catalog.deliveryFeeCents===null?'':(catalog.deliveryFeeCents/100).toFixed(2);
@@ -88,6 +89,15 @@
   $('#settings-form').addEventListener('submit',async event=>{
     event.preventDefault();const button=event.submitter;button.disabled=true;
     try{const value=$('#delivery-fee').value,minimum=$('#minimum-order').value;const result=await api('/api/admin/settings',{method:'PATCH',body:JSON.stringify({deliveryFeeCents:value===''?null:Math.round(Number(value)*100),minimumSubtotalCents:minimum===''?null:Math.round(Number(minimum)*100),acceptingOrders:$('#accepting-orders').checked})});Object.assign(catalog,result);renderStoreStatus();message('Configuração salva.');}catch(error){message(error.message);}finally{button.disabled=false;}
+  });
+  $('#new-product-form').addEventListener('submit',async event=>{
+    event.preventDefault();const form=event.target,button=event.submitter;button.disabled=true;
+    const status=$('#new-product-message');status.textContent='Salvando lanche...';
+    try{
+      await api('/api/admin/products',{method:'POST',body:JSON.stringify({name:form.elements.name.value,description:form.elements.description.value,category:form.elements.category.value,priceCents:Math.round(Number(form.elements.price.value)*100),active:form.elements.active.checked})});
+      form.reset();status.textContent='Lanche cadastrado com sucesso!';
+      catalog=await api('/api/catalog');renderProducts();
+    }catch(error){status.textContent=error.message;}finally{button.disabled=false;}
   });
   $('#admin-products').addEventListener('submit',async event=>{
     event.preventDefault();const form=event.target,button=event.submitter;button.disabled=true;
