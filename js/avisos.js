@@ -7,21 +7,20 @@
   }
   function beep(){
     if(!audio)return;
-    // A bright delivery doorbell: three ding-dong pairs with a bell-like decay.
+    // Urgent delivery call: a bright, sustained eight-note phrase repeated four times.
     try{
-      for(let ring=0;ring<3;ring++)for(let note=0;note<2;note++){
-        const start=audio.currentTime+ring*2.1+note*.48;
-        const fundamental=note===0?1318.51:1046.5;
-        for(const [ratio,volume,decay] of [[1,.6,1.05],[2.76,.12,.38]]){
-          const oscillator=audio.createOscillator(),gain=audio.createGain();
-          oscillator.type='sine';oscillator.frequency.value=fundamental*ratio;
-          oscillator.connect(gain);gain.connect(audio.destination);
-          gain.gain.setValueAtTime(0,start);
-          gain.gain.linearRampToValueAtTime(volume,start+.008);
-          gain.gain.exponentialRampToValueAtTime(.001,start+decay);
-          oscillator.start(start);oscillator.stop(start+decay+.03);
-          oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
-        }
+      const melody=[880,1174.66,1396.91,1174.66,880,1174.66,1567.98,1396.91];
+      for(let repeat=0;repeat<4;repeat++)for(let note=0;note<melody.length;note++){
+        const start=audio.currentTime+repeat*2.1+note*.21;
+        const oscillator=audio.createOscillator(),gain=audio.createGain();
+        oscillator.type='square';oscillator.frequency.value=melody[note];
+        oscillator.connect(gain);gain.connect(audio.destination);
+        gain.gain.setValueAtTime(0,start);
+        gain.gain.linearRampToValueAtTime(.85,start+.008);
+        gain.gain.setValueAtTime(.85,start+.16);
+        gain.gain.exponentialRampToValueAtTime(.001,start+.195);
+        oscillator.start(start);oscillator.stop(start+.2);
+        oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
       }
     }catch{}
   }
