@@ -1,4 +1,4 @@
-# Mestredoslanches
+# MestreFront
 
 Frontend do Mestre dos Lanches: entrada do cliente, cardápio, sacola, checkout, acompanhamento dos pedidos e interface do painel da empresa.
 
