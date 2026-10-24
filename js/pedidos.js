@@ -73,6 +73,15 @@
     return { qty:cart.reduce((sum,line) => sum+line.qty,0), complete:cart.every(line => priceKnown(byId.get(line.id))), subtotal:cart.reduce((sum,line) => sum+(priceKnown(byId.get(line.id)) ? byId.get(line.id).preco*line.qty : 0),0) };
   }
 
+  function updateCartShortcut(){
+    const page=document.documentElement;
+    const atBottom=page && window.scrollY+window.innerHeight>=page.scrollHeight-24;
+    $('#mobile-cart').hidden=!cart.length || Boolean(atBottom);
+  }
+  window.addEventListener?.('scroll',updateCartShortcut,{passive:true});
+  window.addEventListener?.('resize',updateCartShortcut);
+  if(window.ResizeObserver)new window.ResizeObserver(updateCartShortcut).observe(document.body);
+
   function renderCart() {
     const {qty,complete,subtotal} = totals();
     const minimum=config.minimumSubtotalCents;
@@ -87,7 +96,7 @@
     $('#cart-delivery').textContent = config.deliveryFeeCents === null ? 'A confirmar' : config.deliveryFeeCents === 0 ? 'Grátis' : money(config.deliveryFeeCents/100);
     $('#cart-minimum').textContent = missing === null ? 'Consulte a lanchonete sobre o pedido mínimo.' : !complete ? `Pedido mínimo: ${money(minimum/100)} em produtos.` : missing > 0 ? `Faltam ${money(missing/100)} para atingir o pedido mínimo de ${money(minimum/100)}.` : `Pedido mínimo de ${money(minimum/100)} atingido.`;
     $('#mobile-cart-count').textContent = `${qty} ${qty === 1 ? 'item' : 'itens'}`;
-    $('#mobile-cart').hidden = !qty;
+    updateCartShortcut();
     try { localStorage.setItem(storageKey,JSON.stringify(cart)); } catch { /* Mantém a sacola em memória. */ }
   }
 
