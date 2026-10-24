@@ -6,41 +6,22 @@
     try{const Audio=window.AudioContext || window.webkitAudioContext;if(!Audio)return false;audio ||= new Audio();audio.resume().catch(()=>{document.querySelector('#alerts-state').textContent='O navegador bloqueou o som. Clique em Ativar som e notificações para tentar novamente.';});enabled=true;return true;}catch{return false;}
   }
   function beep(){
-    if(window.speechSynthesis && window.SpeechSynthesisUtterance){
-      try{
-        const speech=window.speechSynthesis;
-        // Keep the call clear when several orders arrive together.
-        if(speech.speaking || speech.pending)return;
-        const call=new window.SpeechSynthesisUtterance('Delivery! ... Delivery! ... Delivery!');
-        call.lang='pt-BR';call.volume=1;call.rate=.95;call.pitch=1;
-        const voices=speech.getVoices();
-        const portuguese=voices.filter(voice=>voice.lang.toLowerCase().startsWith('pt'));
-        const score=voice=>(voice.lang.toLowerCase()==='pt-br'?100:0)+(/natural|neural|online/i.test(voice.name)?40:0)+(/google/i.test(voice.name)?20:0);
-        const voice=portuguese.sort((a,b)=>score(b)-score(a))[0];
-        if(voice)call.voice=voice;
-        call.onerror=()=>playFallback();
-        speech.speak(call);
-        return;
-      }catch{}
-    }
-    playFallback();
-  }
-  function playFallback(){
     if(!audio)return;
-    // Urgent delivery call: a bright, sustained eight-note phrase repeated four times.
+    // Alternating metal bells: sharp strikes and inharmonic ringing tails.
     try{
-      const melody=[880,1174.66,1396.91,1174.66,880,1174.66,1567.98,1396.91];
-      for(let repeat=0;repeat<4;repeat++)for(let note=0;note<melody.length;note++){
-        const start=audio.currentTime+repeat*2.1+note*.21;
-        const oscillator=audio.createOscillator(),gain=audio.createGain();
-        oscillator.type='square';oscillator.frequency.value=melody[note];
-        oscillator.connect(gain);gain.connect(audio.destination);
-        gain.gain.setValueAtTime(0,start);
-        gain.gain.linearRampToValueAtTime(.85,start+.008);
-        gain.gain.setValueAtTime(.85,start+.16);
-        gain.gain.exponentialRampToValueAtTime(.001,start+.195);
-        oscillator.start(start);oscillator.stop(start+.2);
-        oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
+      for(let strike=0;strike<10;strike++){
+        const start=audio.currentTime+strike*.62;
+        const fundamental=strike%2===0?740:988;
+        for(const [ratio,volume,decay] of [[1,.4,1.5],[2.71,.18,.85],[4.07,.09,.5],[5.43,.04,.24]]){
+          const oscillator=audio.createOscillator(),gain=audio.createGain();
+          oscillator.type='sine';oscillator.frequency.value=fundamental*ratio;
+          oscillator.connect(gain);gain.connect(audio.destination);
+          gain.gain.setValueAtTime(0,start);
+          gain.gain.linearRampToValueAtTime(volume,start+.004);
+          gain.gain.exponentialRampToValueAtTime(.001,start+decay);
+          oscillator.start(start);oscillator.stop(start+decay+.03);
+          oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
+        }
       }
     }catch{}
   }
