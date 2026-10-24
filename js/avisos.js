@@ -11,10 +11,12 @@
         const speech=window.speechSynthesis;
         // Keep the call clear when several orders arrive together.
         if(speech.speaking || speech.pending)return;
-        const call=new window.SpeechSynthesisUtterance('Delivery! Delivery! Chegou pedido! Delivery!');
-        call.lang='pt-BR';call.volume=1;call.rate=1.12;call.pitch=1.25;
+        const call=new window.SpeechSynthesisUtterance('Delivery! ... Delivery! ... Delivery!');
+        call.lang='pt-BR';call.volume=1;call.rate=.95;call.pitch=1;
         const voices=speech.getVoices();
-        const voice=voices.find(voice=>voice.lang.toLowerCase()==='pt-br') || voices.find(voice=>voice.lang.toLowerCase().startsWith('pt'));
+        const portuguese=voices.filter(voice=>voice.lang.toLowerCase().startsWith('pt'));
+        const score=voice=>(voice.lang.toLowerCase()==='pt-br'?100:0)+(/natural|neural|online/i.test(voice.name)?40:0)+(/google/i.test(voice.name)?20:0);
+        const voice=portuguese.sort((a,b)=>score(b)-score(a))[0];
         if(voice)call.voice=voice;
         call.onerror=()=>playFallback();
         speech.speak(call);
