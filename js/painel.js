@@ -11,7 +11,7 @@
     const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...options.headers}});
     if(response.status===401)showLogin();
     const result=await window.MDLHttp.readJson(response);
-    if(!response.ok){if(response.status===401)showLogin();throw Error(result.error || 'Não foi possível concluir.');}
+    if(!response.ok){if(response.status===401)showLogin();if(result.code==='CONFIGURATION_REQUIRED' && Array.isArray(result.missing))throw Error('O backend est? sem configura??o: '+result.missing.join(', ')+'. Salve essas vari?veis no projeto Mestrebackend do Vercel e fa?a um novo deploy.');throw Error(result.error || 'Não foi possível concluir.');}
     return result;
   }
   const message=text=>{$('#admin-message').textContent=text;};
