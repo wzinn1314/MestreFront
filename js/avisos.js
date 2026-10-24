@@ -7,7 +7,23 @@
   }
   function beep(){
     if(!audio)return;
-    try{for(let i=0;i<12;i++){const oscillator=audio.createOscillator(),gain=audio.createGain(),start=audio.currentTime+i*.5;oscillator.connect(gain);gain.connect(audio.destination);oscillator.type='triangle';oscillator.frequency.value=i%2?1046:784;gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(.65,start+.03);gain.gain.exponentialRampToValueAtTime(.001,start+.42);oscillator.start(start);oscillator.stop(start+.45);}}catch{}
+    // Three double rings, like a telephone, over approximately six seconds.
+    try{
+      for(let ring=0;ring<3;ring++)for(let pulse=0;pulse<2;pulse++){
+        const start=audio.currentTime+ring*2.2+pulse*.65;
+        for(const frequency of [440,480]){
+          const oscillator=audio.createOscillator(),gain=audio.createGain();
+          oscillator.type='sine';oscillator.frequency.value=frequency;
+          oscillator.connect(gain);gain.connect(audio.destination);
+          gain.gain.setValueAtTime(0,start);
+          gain.gain.linearRampToValueAtTime(.4,start+.015);
+          gain.gain.setValueAtTime(.4,start+.46);
+          gain.gain.exponentialRampToValueAtTime(.001,start+.52);
+          oscillator.start(start);oscillator.stop(start+.54);
+          oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};
+        }
+      }
+    }catch{}
   }
   function claim(id){
     try{const key='mdl-notified-orders',ids=JSON.parse(localStorage.getItem(key)||'[]');if(ids.includes(id))return false;localStorage.setItem(key,JSON.stringify([...ids.slice(-199),id]));}catch{}
