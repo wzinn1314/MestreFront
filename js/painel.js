@@ -90,6 +90,38 @@
     event.preventDefault();const button=event.submitter;button.disabled=true;
     try{const value=$('#delivery-fee').value,minimum=$('#minimum-order').value;const result=await api('/api/admin/settings',{method:'PATCH',body:JSON.stringify({deliveryFeeCents:value===''?null:Math.round(Number(value)*100),minimumSubtotalCents:minimum===''?null:Math.round(Number(minimum)*100),acceptingOrders:$('#accepting-orders').checked})});Object.assign(catalog,result);renderStoreStatus();message('Configuração salva.');}catch(error){message(error.message);}finally{button.disabled=false;}
   });
+  let photoReader;
+  function clearProductPhoto(){
+    if(photoReader)photoReader.abort();
+    photoReader=null;
+    $('#new-product-photo').value='';
+    $('#new-product-photo-image').removeAttribute('src');
+    $('#new-product-photo-preview').hidden=true;
+    $('#new-product-photo-message').textContent='';
+  }
+  $('#new-product-photo').addEventListener('change',event=>{
+    const file=event.target.files[0];
+    clearProductPhoto();
+    if(!file)return;
+    const status=$('#new-product-photo-message');
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)){
+      status.textContent='Escolha uma foto JPG, PNG ou WebP.';return;
+    }
+    if(file.size>5*1024*1024){status.textContent='A foto deve ter no m\u00e1ximo 5 MB.';return;}
+    const reader=new FileReader();photoReader=reader;
+    reader.onload=()=>{
+      if(photoReader!==reader)return;
+      $('#new-product-photo-image').src=reader.result;
+      $('#new-product-photo-preview').hidden=false;
+    };
+    reader.onerror=()=>{if(photoReader===reader)status.textContent='N\u00e3o foi poss\u00edvel abrir a foto. Escolha outro arquivo.';};
+    reader.readAsDataURL(file);
+  });
+  $('#new-product-photo-image').addEventListener('error',()=>{
+    clearProductPhoto();$('#new-product-photo-message').textContent='Arquivo de imagem inv\u00e1lido. Escolha outra foto.';
+  });
+  $('#remove-product-photo').addEventListener('click',clearProductPhoto);
+  $('#new-product-form').addEventListener('reset',clearProductPhoto);
   $('#new-product-form').addEventListener('submit',async event=>{
     event.preventDefault();const form=event.target,button=event.submitter;button.disabled=true;
     const status=$('#new-product-message');status.textContent='Salvando lanche...';
