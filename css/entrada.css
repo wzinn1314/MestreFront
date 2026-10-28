@@ -27,3 +27,38 @@ html { scroll-snap-type:none; }
 .entry-company-access a { display:inline-flex; align-items:center; gap:10px; min-height:48px; padding:12px 20px; border:1px solid var(--gold); border-radius:12px; background:var(--gold); font-size:14px; font-weight:700; line-height:1.5; color:#000; text-decoration:none; box-shadow:0 4px 18px rgba(232,197,71,.18); }
 .entry-company-access a:hover { background:var(--gold-2); color:#000; }
 .entry-company-access a:focus-visible { outline:2px solid var(--gold); outline-offset:4px; border-radius:4px; }
+
+/* Keep the entry screen within the viewport and the company access visible. */
+.entry-page { height:100svh; height:100dvh; min-height:0; overflow:hidden; }
+.entry-company-access { padding-top:max(8px,env(safe-area-inset-top)); padding-right:max(14px,env(safe-area-inset-right)); padding-bottom:8px; }
+.entry-company-access a { min-height:44px; padding:10px 16px; }
+.entry-shell { flex:1; min-height:0; width:100%; margin:0 auto; padding:12px max(20px,calc((100% - 420px)/2)) max(12px,env(safe-area-inset-bottom)); overflow-y:auto; }
+.entry-heading { margin-bottom:16px; }
+.entry-heading img { width:80px; margin-bottom:8px; }
+.entry-heading h1 { font-size:clamp(26px,4vw,32px); }
+.entry-heading > p:last-child { margin-top:6px; }
+.entry-card { padding:22px; border-radius:20px; }
+.entry-icon { display:none; }
+.entry-label { margin-bottom:4px; }
+.entry-card h2 { font-size:22px; margin-bottom:6px; }
+.entry-card form { margin-top:16px; }
+.entry-card .field { margin-bottom:12px; }
+.entry-orders-link { margin-top:12px; }
+.entry-footer { margin-top:14px; }
+@media(min-height:740px) {
+ .entry-shell { display:flex; flex-direction:column; justify-content:center; }
+ .entry-heading img { width:100px; }
+}
+@media(max-height:620px) {
+ .entry-shell { padding-top:4px; }
+ .entry-heading img,.entry-heading .kicker,.entry-heading > p:last-child,.entry-card > p { display:none; }
+ .entry-heading { margin-bottom:10px; }
+ .entry-card { padding:16px; }
+ .entry-card form { margin-top:10px; }
+ .entry-footer { margin-top:8px; }
+}
+@media(max-height:440px) and (min-width:600px) {
+ .entry-shell { display:grid; grid-template-columns:1fr minmax(280px,420px); align-content:center; align-items:center; column-gap:24px; padding-inline:24px; }
+ .entry-heading { margin:0; }
+ .entry-footer { grid-column:1 / -1; }
+}
