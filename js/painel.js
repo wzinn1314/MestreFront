@@ -56,7 +56,7 @@
     $('#accepting-orders').checked=catalog.acceptingOrders;
     $('#delivery-fee').value=catalog.deliveryFeeCents===null?'':(catalog.deliveryFeeCents/100).toFixed(2);
     $('#minimum-order').value=catalog.minimumSubtotalCents===null?'':(catalog.minimumSubtotalCents/100).toFixed(2);
-    $('#admin-products').innerHTML=catalog.cardapio.flatMap(group=>group.itens.map(item=>`<form class="product-editor" data-product="${item.id}"><div><h3>${escape(item.nome)}</h3><p class="muted">${escape(group.nome)}</p>${item.pedidoPendente?'<p class="muted">Op??es do combo a confirmar.</p>':''}</div><label class="field">Preço (R$)<input name="price" aria-label="Preço de ${escape(item.nome)}" type="number" min="0" max="10000" step="0.01" inputmode="decimal" value="${item.preco===null?'':item.preco.toFixed(2)}"></label><label class="checkbox-field"><input name="active" type="checkbox" ${item.ativo?'checked':''}> Disponível</label><button class="btn btn-ghost" type="submit">Salvar</button></form>`)).join('');
+    $('#admin-products').innerHTML=catalog.cardapio.flatMap(group=>group.itens.map(item=>`<form class="product-editor" data-product="${item.id}"><div><h3>${escape(item.nome)}</h3><p class="muted">${escape(group.nome)}</p>${item.pedidoPendente?'<p class="muted">Op??es do combo a confirmar.</p>':''}</div><label class="field">Preço (R$)<input name="price" aria-label="Preço de ${escape(item.nome)}" type="number" min="0" max="10000" step="0.01" inputmode="decimal" value="${item.preco===null?'':item.preco.toFixed(2)}"></label><label class="checkbox-field"><input name="active" type="checkbox" ${item.ativo?'checked':''}> Disponível</label><label class="field">Foto do produto${item.imagem?`<img src="${escape(item.imagem)}" alt="Foto de ${escape(item.nome)}" width="90" height="70" style="object-fit:cover;border-radius:8px">`:''}<input name="photo" type="file" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG ou WebP, até 5 MB</small></label><button class="btn btn-ghost" type="submit">Salvar</button></form>`)).join('');
   }
   function renderDetail(){
     if(!selected)return;
@@ -90,10 +90,25 @@
     event.preventDefault();const button=event.submitter;button.disabled=true;
     try{const value=$('#delivery-fee').value,minimum=$('#minimum-order').value;const result=await api('/api/admin/settings',{method:'PATCH',body:JSON.stringify({deliveryFeeCents:value===''?null:Math.round(Number(value)*100),minimumSubtotalCents:minimum===''?null:Math.round(Number(minimum)*100),acceptingOrders:$('#accepting-orders').checked})});Object.assign(catalog,result);renderStoreStatus();message('Configuração salva.');}catch(error){message(error.message);}finally{button.disabled=false;}
   });
-  let photoReader;
+  async function readProductImage(file){
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024)throw Error('Escolha JPG, PNG ou WebP de até 5 MB.');
+    const bitmap=await createImageBitmap(file);
+    const ratio=Math.min(1,900/Math.max(bitmap.width,bitmap.height));
+    const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*ratio));canvas.height=Math.max(1,Math.round(bitmap.height*ratio));
+    canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+    const image=canvas.toDataURL('image/jpeg',0.75);
+    if(image.length>400000)throw Error('Foto muito grande. Escolha uma imagem menor.');
+    return image;
+  }
+  async function readProductImageData(){
+    if(photoReader?.readyState===1)throw Error('Aguarde a foto carregar.');
+    return readProductImage(selectedPhotoFile);
+  }
+  let photoReader,selectedPhotoFile;
   function clearProductPhoto(){
     if(photoReader)photoReader.abort();
     photoReader=null;
+    selectedPhotoFile=null;
     $('#new-product-photo').value='';
     $('#new-product-photo-image').removeAttribute('src');
     $('#new-product-photo-preview').hidden=true;
@@ -108,6 +123,7 @@
       status.textContent='Escolha uma foto JPG, PNG ou WebP.';return;
     }
     if(file.size>5*1024*1024){status.textContent='A foto deve ter no m\u00e1ximo 5 MB.';return;}
+    selectedPhotoFile=file;
     const reader=new FileReader();photoReader=reader;
     reader.onload=()=>{
       if(photoReader!==reader)return;
@@ -126,14 +142,14 @@
     event.preventDefault();const form=event.target,button=event.submitter;button.disabled=true;
     const status=$('#new-product-message');status.textContent='Salvando lanche...';
     try{
-      await api('/api/admin/products',{method:'POST',body:JSON.stringify({name:form.elements.name.value,description:form.elements.description.value,category:form.elements.category.value,priceCents:Math.round(Number(form.elements.price.value)*100),active:form.elements.active.checked})});
+      await api('/api/admin/products',{method:'POST',body:JSON.stringify({name:form.elements.name.value,description:form.elements.description.value,category:form.elements.category.value,priceCents:Math.round(Number(form.elements.price.value)*100),active:form.elements.active.checked,image:photoReader?await readProductImageData():undefined})});
       form.reset();status.textContent='Lanche cadastrado com sucesso!';
       catalog=await api('/api/catalog');renderProducts();
     }catch(error){status.textContent=error.message;}finally{button.disabled=false;}
   });
   $('#admin-products').addEventListener('submit',async event=>{
     event.preventDefault();const form=event.target,button=event.submitter;button.disabled=true;
-    try{const price=form.elements.price.value;await api(`/api/admin/products/${form.dataset.product}`,{method:'PATCH',body:JSON.stringify({priceCents:price===''?null:Math.round(Number(price)*100),active:form.elements.active.checked})});message('Produto atualizado.');}catch(error){message(error.message);}finally{button.disabled=false;}
+    try{const price=form.elements.price.value;await api(`/api/admin/products/${form.dataset.product}`,{method:'PATCH',body:JSON.stringify({priceCents:price===''?null:Math.round(Number(price)*100),active:form.elements.active.checked,...(form.elements.photo.files[0]?{image:await readProductImage(form.elements.photo.files[0])}:{})})});catalog=await api('/api/catalog');renderProducts();message('Produto atualizado.');}catch(error){message(error.message);}finally{button.disabled=false;}
   });
   $('#orders-list').addEventListener('click',event=>{const button=event.target.closest('[data-order]');if(!button)return;selected=orders.find(item=>item.id===button.dataset.order);$('#detail-message').textContent='';renderDetail();$('#order-detail').showModal();document.body.classList.add('has-modal');});
   $('#detail-close').addEventListener('click',()=>$('#order-detail').close());
